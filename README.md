@@ -12,7 +12,7 @@ Welcome to the Markov Chain Text Generator! This Python project uses a Markov Ch
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Vamsi404/Markov-chain-based-text-generator
+   git clone https://github.com/Vamsi404/Markov-chain-based-text-generator.git
    ```
 2. **Navigate to the Directory**
    ```bash
