@@ -12,7 +12,7 @@ Welcome to the Markov Chain Text Generator! This Python project uses a Markov Ch
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Vamsi404/markov-chain-text-generator.git
+   git clone https://github.com/Vamsi404/Markov-chain-based-text-generator
    ```
 2. **Navigate to the Directory**
    ```bash
@@ -32,7 +32,21 @@ This function creates a table of character frequencies based on the input text a
 
 ```python
 def generateTable(data, k=4):
-    # Your implementation here
+    T = {}
+    for i in range(len(data) - k):
+        X = data[i:i + k]
+        Y = data[i + k]
+
+        if T.get(X) is None:
+            T[X] = {}
+            T[X][Y] = 1
+        else:
+            if T[X].get(Y) is None:
+                T[X][Y] = 1
+            else:
+                T[X][Y] += 1
+
+    return T
 ```
 
 ### 2. Convert Frequencies to Probabilities
@@ -41,7 +55,12 @@ Convert the frequency counts in the table to probabilities.
 
 ```python
 def convertfreqintoprob(T):
-    # Your implementation here
+    for kx in T.keys():
+        s = float(sum(T[kx].values()))
+        for k in T[kx].keys():
+            T[kx][k] = T[kx][k] / s
+
+    return T
 ```
 
 ### 3. Load Text from a File
@@ -50,7 +69,8 @@ Load and preprocess text data from a file.
 
 ```python
 def load_text(filename):
-    # Your implementation here
+    with open(filename, encoding='utf8') as f:
+        return f.read().lower()
 ```
 
 ### 4. Train the Markov Chain Model
@@ -59,7 +79,9 @@ Train the Markov Chain model using the input text.
 
 ```python
 def trainMarkovChain(text, k=4):
-    # Your implementation here
+    T = generateTable(text, k)
+    T = convertfreqintoprob(T)
+    return T
 ```
 
 ### 5. Sample the Next Character
@@ -68,7 +90,13 @@ Sample the next character based on the current context and the trained model.
 
 ```python
 def sample_next(ctx, T, k):
-    # Your implementation here
+    ctx = ctx[-k:]
+    if T.get(ctx) is None:
+        return " "
+    possible_Chars = list(T[ctx].keys())
+    possible_values = list(T[ctx].values())
+
+    return np.random.choice(possible_Chars, p=possible_values)
 ```
 
 ### 6. Generate Text
@@ -77,7 +105,15 @@ Generate a new text sequence starting from a given sentence.
 
 ```python
 def generateText(starting_sent, k=4, max_len=1000):
-    # Your implementation here
+    sentence = starting_sent
+    ctx = starting_sent[-k:]
+
+    for ix in range(max_len):
+        next_prediction = sample_next(ctx, model, k)
+        sentence += next_prediction
+        ctx = sentence[-k:]
+
+    return sentence
 ```
 
 ## Example
